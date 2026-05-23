@@ -264,21 +264,21 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 // Format: 'blockscout' = returns {gas_prices:{average:...}} | 'etherscan' = returns {result:'0x...'} | 'routescan' = returns {jsonrpc,result:'0x...'}
 const CHAINS = [
   { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', url:'https://eth.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
-  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon.blockscout.com/api/v2/stats', format:'blockscout', type:'L1', rpc:'https://polygon-rpc.com' },
   { id:'arbitrum', name:'Arbitrum One', symbol:'ETH', color:'#28A0F0', url:'https://arbitrum.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
   { id:'optimism', name:'Optimism', symbol:'ETH', color:'#FF0420', url:'https://optimism.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
   { id:'base', name:'Base', symbol:'ETH', color:'#0052FF', url:'https://base.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
   { id:'gnosis', name:'Gnosis', symbol:'xDAI', color:'#04795B', url:'https://gnosis.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
-  { id:'celo', name:'Celo', symbol:'CELO', color:'#FCFF52', url:'https://celo.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
+  { id:'celo', name:'Celo', symbol:'CELO', color:'#FCFF52', url:'https://celo.blockscout.com/api/v2/stats', format:'blockscout', type:'L1', rpc:'https://forno.celo.org' },
   { id:'zksync', name:'zkSync Era', symbol:'ETH', color:'#4E529A', url:'https://zksync.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
   { id:'scroll', name:'Scroll', symbol:'ETH', color:'#FFDBB0', url:'https://scroll.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
   { id:'mode', name:'Mode', symbol:'ETH', color:'#DFFE00', url:'https://explorer.mode.network/api/v2/stats', format:'blockscout', type:'L2' },
-  { id:'zora', name:'Zora', symbol:'ETH', color:'#000000', url:'https://explorer.zora.energy/api/v2/stats', format:'blockscout', type:'L2' },
-  // Etherscan-compatible (need hex parsing)
-  { id:'bsc', name:'BNB Chain', symbol:'BNB', color:'#F0B90B', url:'https://api.bscscan.com/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L1' },
+  { id:'zora', name:'Zora', symbol:'ETH', color:'#A0A0A0', url:'https://explorer.zora.energy/api/v2/stats', format:'blockscout', type:'L2' },
+  // JSON-RPC (eth_gasPrice, always in wei, always CORS=*)
+  { id:'bsc', name:'BNB Chain', symbol:'BNB', color:'#F0B90B', url:'https://bsc-dataseed1.binance.org/', format:'rpc', type:'L1' },
   { id:'avalanche', name:'Avalanche C', symbol:'AVAX', color:'#E84142', url:'https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L1' },
-  { id:'linea', name:'Linea', symbol:'ETH', color:'#61DFFF', url:'https://api.lineascan.build/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L2' },
-  { id:'mantle', name:'Mantle', symbol:'MNT', color:'#000000', url:'https://api.routescan.io/v2/network/mainnet/evm/5000/etherscan/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L2' },
+  { id:'linea', name:'Linea', symbol:'ETH', color:'#61DFFF', url:'https://rpc.linea.build', format:'rpc', type:'L2' },
+  { id:'mantle', name:'Mantle', symbol:'MNT', color:'#A0A0A0', url:'https://api.routescan.io/v2/network/mainnet/evm/5000/etherscan/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L2' },
 ];
 
 let chainData = {};
@@ -328,12 +328,19 @@ function parseGasPrice(chain, data) {
     if (gwei > 1e6) gwei = gwei / 1e9;
     return gwei;
   }
-  // Etherscan-compatible returns {result: '0x...'} in wei
+  // Etherscan-compatible returns {result: '0x...'} in wei OR text error
   if (data.result) {
-    const wei = parseInt(data.result, 16);
-    return wei / 1e9; // wei → Gwei
+    if (typeof data.result === 'string' && data.result.startsWith('0x')) {
+      const wei = parseInt(data.result, 16);
+      return wei / 1e9; // wei → Gwei
+    }
+    // Deprecated API message fallback
+    return 0;
   }
-  // Routescan returns {jsonrpc, result: '0x...'}
+  // JSON-RPC returns {jsonrpc, id, result: '0x...'}
+  if (data.jsonrpc && data.result) {
+    return parseInt(data.result, 16) / 1e9;
+  }
   return 0;
 }
 
@@ -342,7 +349,18 @@ async function fetchChainData(chain) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
     
-    const res = await fetch(chain.url, { signal: controller.signal });
+    let res;
+    if (chain.format === 'rpc') {
+      // JSON-RPC: POST eth_gasPrice
+      res = await fetch(chain.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 }),
+        signal: controller.signal
+      });
+    } else {
+      res = await fetch(chain.url, { signal: controller.signal });
+    }
     clearTimeout(timeout);
     
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
