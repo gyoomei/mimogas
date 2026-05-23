@@ -86,20 +86,20 @@ Gas fees are unpredictable. You want to:
 | Chain | Type | API Source |
 |-------|------|-----------|
 | Ethereum | L1 | eth.blockscout.com |
-| BNB Chain | L1 | bsc.blockscout.com |
+| BNB Chain | L1 | api.bscscan.com |
 | Polygon | L2 | polygon.blockscout.com |
 | Arbitrum One | L2 | arbitrum.blockscout.com |
 | Optimism | L2 | optimism.blockscout.com |
 | Base | L2 | base.blockscout.com |
-| Avalanche C | L1 | avalanche.blockscout.com |
+| Avalanche C | L1 | api.snowtrace.io |
 | Gnosis | L1 | gnosis.blockscout.com |
-| Fantom | L1 | fantom.blockscout.com |
 | Celo | L1 | celo.blockscout.com |
 | zkSync Era | L2 | zksync.blockscout.com |
-| Linea | L2 | explorer.linea.build |
 | Scroll | L2 | scroll.blockscout.com |
-| Mantle | L2 | mantle.blockscout.com |
-| Polygon zkEVM | L2 | zkevm.blockscout.com |
+| Mode | L2 | explorer.mode.network |
+| Zora | L2 | explorer.zora.energy |
+| Linea | L2 | api.lineascan.build |
+| Mantle | L2 | api.routescan.io |
 
 ## 🔒 Security & Privacy
 
