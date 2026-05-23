@@ -329,17 +329,15 @@ function parseGasPrice(chain, data) {
     return gwei;
   }
   // Etherscan-compatible returns {result: '0x...'} in wei OR text error
-  if (data.result) {
-    if (typeof data.result === 'string' && data.result.startsWith('0x')) {
-      const wei = parseInt(data.result, 16);
-      return wei / 1e9; // wei → Gwei
-    }
-    // Deprecated API message fallback
-    return 0;
-  }
   // JSON-RPC returns {jsonrpc, id, result: '0x...'}
-  if (data.jsonrpc && data.result) {
-    return parseInt(data.result, 16) / 1e9;
+  if (data.result !== undefined && data.result !== null) {
+    const r = String(data.result); // Force string
+    if (r.startsWith('0x')) {
+      const wei = parseInt(r, 16);
+      if (!isNaN(wei)) return wei / 1e9; // wei → Gwei
+    }
+    // Deprecated API message or non-hex response
+    return 0;
   }
   return 0;
 }
