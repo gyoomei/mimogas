@@ -113,7 +113,73 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   .chain-grid{grid-template-columns:1fr}
   .stats-bar{flex-direction:column;align-items:center}
   .ai-recommendations{grid-template-columns:1fr}
+  .chat-panel{width:100%;right:0;left:0;bottom:0;border-radius:16px 16px 0 0;max-height:85vh}
 }
+
+/* ═══════ CHAT WIDGET ═══════ */
+.chat-fab{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));border:none;color:#fff;font-size:1.6rem;cursor:pointer;box-shadow:0 4px 20px rgba(168,85,247,0.4);z-index:1000;transition:all 0.3s;display:flex;align-items:center;justify-content:center}
+.chat-fab:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(168,85,247,0.6)}
+.chat-fab.hidden{transform:scale(0);opacity:0;pointer-events:none}
+.chat-fab .pulse{position:absolute;width:100%;height:100%;border-radius:50%;background:var(--purple);animation:fabPulse 2s infinite;z-index:-1}
+@keyframes fabPulse{0%{transform:scale(1);opacity:0.5}100%{transform:scale(1.8);opacity:0}}
+
+.chat-panel{position:fixed;bottom:24px;right:24px;width:400px;max-height:600px;background:var(--bg);border:1px solid rgba(168,85,247,0.25);border-radius:20px;z-index:1001;display:flex;flex-direction:column;transform:scale(0.8) translateY(20px);opacity:0;pointer-events:none;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(168,85,247,0.1);overflow:hidden}
+.chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--glass-border);background:linear-gradient(135deg,rgba(168,85,247,0.1),rgba(59,130,246,0.05))}
+.chat-header-left{display:flex;align-items:center;gap:10px}
+.chat-header-left .mimo-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.chat-header-info h3{font-size:0.95rem;font-weight:700;color:var(--text)}
+.chat-header-info p{font-size:0.72rem;color:var(--green);display:flex;align-items:center;gap:4px}
+.chat-header-info p::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green)}
+.chat-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;padding:4px 8px;border-radius:6px;transition:all 0.2s}
+.chat-close:hover{background:rgba(255,255,255,0.1);color:var(--text)}
+
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;min-height:300px;scroll-behavior:smooth}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-track{background:transparent}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.chat-msg{display:flex;gap:8px;max-width:88%;animation:fadeInMsg 0.3s ease}
+.chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;background:var(--glass)}
+.msg-content{display:flex;flex-direction:column;gap:2px}
+.msg-bubble{padding:10px 14px;border-radius:14px;font-size:0.88rem;line-height:1.5;word-wrap:break-word}
+.chat-msg.bot .msg-bubble{background:var(--glass);border:1px solid var(--glass-border);color:var(--text);border-top-left-radius:4px}
+.chat-msg.user .msg-bubble{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;border-bottom-right-radius:4px}
+.msg-time{font-size:0.65rem;color:var(--muted);padding:0 4px}
+.chat-msg.user .msg-time{text-align:right}
+
+.typing-dots{display:flex;gap:4px;padding:4px 0}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--purple);animation:bounce 1.4s infinite}
+.typing-dots span:nth-child(2){animation-delay:0.2s}
+.typing-dots span:nth-child(3){animation-delay:0.4s}
+
+.chat-code{background:rgba(0,0,0,0.3);border:1px solid var(--glass-border);border-radius:8px;padding:10px 12px;margin:6px 0;overflow-x:auto;font-size:0.8rem;font-family:'Fira Code',monospace}
+.chat-inline{background:rgba(168,85,247,0.15);padding:1px 5px;border-radius:4px;font-size:0.82rem;font-family:'Fira Code',monospace}
+
+.chat-suggestions{display:flex;gap:6px;padding:8px 16px;flex-wrap:wrap;border-top:1px solid var(--glass-border)}
+.suggestion-chip{padding:5px 12px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:var(--muted);font-size:0.75rem;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.suggestion-chip:hover{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,0.1)}
+
+.chat-input-area{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--glass-border);align-items:flex-end}
+.chat-input{flex:1;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:10px 14px;color:var(--text);font-size:0.88rem;resize:none;outline:none;max-height:120px;font-family:inherit;transition:border-color 0.2s}
+.chat-input::placeholder{color:var(--muted)}
+.chat-input:focus{border-color:rgba(168,85,247,0.5)}
+.chat-send{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.chat-send:hover{transform:scale(1.05);box-shadow:0 2px 10px rgba(168,85,247,0.4)}
+.chat-send:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.send-loading{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeInMsg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center;gap:12px}
+.chat-welcome .mimo-big{font-size:3rem}
+.chat-welcome h4{color:var(--text);font-size:1rem}
+.chat-welcome p{color:var(--muted);font-size:0.82rem;line-height:1.5}
+.chat-welcome .quick-questions{display:flex;flex-direction:column;gap:6px;margin-top:8px;width:100%}
+.quick-q{padding:8px 14px;border-radius:10px;border:1px solid var(--glass-border);background:var(--glass);color:var(--muted);font-size:0.8rem;cursor:pointer;text-align:left;transition:all 0.2s}
+.quick-q:hover{border-color:var(--purple);color:var(--text);background:rgba(168,85,247,0.08)}
 </style>
 </head>
 <body>
@@ -556,6 +622,222 @@ function renderAIFallback(sorted) {
 
 // Auto-refresh every 60s
 setInterval(fetchAllChains, 60000);
+
+// ═══════════════════════════════════════════════
+// CHAT WITH MIMO — Free, No API Key
+// ═══════════════════════════════════════════════
+const chatState = {
+  open: false,
+  messages: [],
+  loading: false
+};
+
+function toggleChat() {
+  chatState.open = !chatState.open;
+  const panel = document.getElementById('chatPanel');
+  const fab = document.getElementById('chatFab');
+  panel.classList.toggle('open', chatState.open);
+  fab.classList.toggle('hidden', chatState.open);
+  if (chatState.open) {
+    document.getElementById('chatInput').focus();
+    scrollChat();
+  }
+}
+
+function addChatMessage(role, content) {
+  chatState.messages.push({ role, content, time: new Date() });
+  renderChat();
+  scrollChat();
+}
+
+function renderChat() {
+  const container = document.getElementById('chatMessages');
+  container.innerHTML = chatState.messages.map((m, i) => {
+    const isUser = m.role === 'user';
+    const time = m.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `
+      <div class="chat-msg ${isUser ? 'user' : 'bot'}" style="animation: fadeInMsg 0.3s ease">
+        <div class="msg-avatar">${isUser ? '👤' : '🧠'}</div>
+        <div class="msg-content">
+          <div class="msg-bubble">${formatChatText(m.content)}</div>
+          <div class="msg-time">${time}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function formatChatText(text) {
+  // Basic formatting: code blocks, inline code, bold, line breaks
+  return text
+    .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre class="chat-code"><code>$2</code></pre>')
+    .replace(/`([^`]+)`/g, '<code class="chat-inline">$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+function scrollChat() {
+  const container = document.getElementById('chatMessages');
+  requestAnimationFrame(() => {
+    container.scrollTop = container.scrollHeight;
+  });
+}
+
+function showTypingIndicator() {
+  const container = document.getElementById('chatMessages');
+  const existing = container.querySelector('.typing-indicator');
+  if (existing) return;
+  
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot typing-indicator';
+  typing.innerHTML = `
+    <div class="msg-avatar">🧠</div>
+    <div class="msg-content">
+      <div class="msg-bubble">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  `;
+  container.appendChild(typing);
+  scrollChat();
+}
+
+function removeTypingIndicator() {
+  const el = document.querySelector('.typing-indicator');
+  if (el) el.remove();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || chatState.loading) return;
+  
+  input.value = '';
+  input.style.height = 'auto';
+  // Hide welcome message on first interaction
+  const welcome = document.getElementById('chatWelcome');
+  if (welcome) welcome.remove();
+  addChatMessage('user', text);
+  
+  chatState.loading = true;
+  updateChatUI();
+  showTypingIndicator();
+  
+  // Build context with current gas data
+  const online = Object.values(chainData).filter(d => d.online);
+  const gasContext = online.map(d => `${d.name}: ${d.gasPrice.toFixed(4)} Gwei`).join(', ');
+  
+  const systemPrompt = `You are MiMoGas AI, a helpful blockchain gas optimization assistant by Xiaomi.
+You have access to REAL-TIME gas data: ${gasContext || 'loading...'}
+Help users with: gas optimization, chain selection, transaction timing, fee estimation, DeFi strategies.
+Be concise, practical, and specific with numbers. If asked about non-blockchain topics, answer briefly then suggest getting back to gas optimization.
+Current chains online: ${online.length}/15. Use emoji sparingly.`;
+  
+  const apiMessages = [
+    { role: 'system', content: systemPrompt },
+    ...chatState.messages.slice(-10).map(m => ({ role: m.role, content: m.content }))
+  ];
+  
+  try {
+    const res = await fetch('https://text.pollinations.ai/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: apiMessages,
+        model: 'openai',
+        seed: Math.floor(Math.random() * 10000)
+      })
+    });
+    
+    const text = await res.text();
+    removeTypingIndicator();
+    addChatMessage('assistant', text || 'Sorry, I could not generate a response. Try again.');
+  } catch (e) {
+    removeTypingIndicator();
+    addChatMessage('assistant', '⚠️ Connection error. Please try again.');
+  }
+  
+  chatState.loading = false;
+  updateChatUI();
+}
+
+function updateChatUI() {
+  const btn = document.getElementById('chatSend');
+  const input = document.getElementById('chatInput');
+  btn.disabled = chatState.loading;
+  btn.innerHTML = chatState.loading
+    ? '<div class="send-loading"></div>'
+    : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>';
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChat();
+  }
+}
+
+function autoResizeTextarea(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// Suggestion chips
+function sendSuggestion(text) {
+  document.getElementById('chatInput').value = text;
+  sendChat();
+}
 </script>
+
+<!-- Chat FAB -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="Chat with MiMo AI">
+  <span class="pulse"></span>
+  💬
+</button>
+
+<!-- Chat Panel -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="mimo-avatar">🧠</div>
+      <div class="chat-header-info">
+        <h3>MiMo AI Assistant</h3>
+        <p>Online · Gas Advisor</p>
+      </div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  
+  <div class="chat-messages" id="chatMessages">
+    <!-- Welcome state -->
+    <div class="chat-welcome" id="chatWelcome">
+      <div class="mimo-big">🧠</div>
+      <h4>Hey! I'm MiMo AI</h4>
+      <p>Ask me anything about gas optimization, chain selection, or transaction timing. Free, no API key needed.</p>
+      <div class="quick-questions">
+        <button class="quick-q" onclick="sendSuggestion('Which chain is cheapest right now?')">💰 Which chain is cheapest?</button>
+        <button class="quick-q" onclick="sendSuggestion('Best time to swap on Ethereum?')">⏰ Best time to swap on ETH?</button>
+        <button class="quick-q" onclick="sendSuggestion('Compare L2 fees vs L1')">📊 L2 vs L1 comparison</button>
+        <button class="quick-q" onclick="sendSuggestion('Estimate gas for NFT mint')">🎨 Gas estimate for NFT mint</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="chat-suggestions">
+    <button class="suggestion-chip" onclick="sendSuggestion('Cheapest chain now')">💰 Cheapest</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('Gas prediction next hour')">📈 Predict</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('Best L2 for DeFi')">🔄 Best L2</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('Bridge cost comparison')">🌉 Bridge</button>
+  </div>
+  
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" placeholder="Ask MiMo about gas fees..." rows="1" onkeydown="handleChatKey(event)" oninput="autoResizeTextarea(this)"></textarea>
+    <button class="chat-send" id="chatSend" onclick="sendChat()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
