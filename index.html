@@ -308,7 +308,7 @@ const CHAINS = [
   { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', url:'https://eth.llamarpc.com', format:'rpc', type:'L1' },
   { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon.llamarpc.com', format:'rpc', type:'L1' },
   { id:'arbitrum', name:'Arbitrum One', symbol:'ETH', color:'#28A0F0', url:'https://arb1.arbitrum.io/rpc', format:'rpc', type:'L2' },
-  { id:'optimism', name:'Optimism', symbol:'ETH', color:'#FF0420', url:'https://optimism.drpc.org', format:'rpc', type:'L2' },
+  { id:'optimism', name:'Optimism', symbol:'ETH', color:'#FF0420', url:'https://rpc.ankr.com/optimism', format:'rpc', type:'L2' },
   { id:'base', name:'Base', symbol:'ETH', color:'#0052FF', url:'https://base.llamarpc.com', format:'rpc', type:'L2' },
   { id:'gnosis', name:'Gnosis', symbol:'xDAI', color:'#04795B', url:'https://rpc.gnosischain.com', format:'rpc', type:'L1' },
   { id:'celo', name:'Celo', symbol:'CELO', color:'#FCFF52', url:'https://forno.celo.org', format:'rpc', type:'L1' },
@@ -317,7 +317,7 @@ const CHAINS = [
   { id:'mode', name:'Mode', symbol:'ETH', color:'#DFFE00', url:'https://mainnet.mode.network', format:'rpc', type:'L2' },
   { id:'zora', name:'Zora', symbol:'ETH', color:'#A0A0A0', url:'https://zora.drpc.org', format:'rpc', type:'L2' },
   { id:'bsc', name:'BNB Chain', symbol:'BNB', color:'#F0B90B', url:'https://bsc-dataseed1.binance.org/', format:'rpc', type:'L1' },
-  { id:'avalanche', name:'Avalanche C', symbol:'AVAX', color:'#E84142', url:'https://avax.drpc.org', format:'rpc', type:'L1' },
+  { id:'avalanche', name:'Avalanche C', symbol:'AVAX', color:'#E84142', url:'https://rpc.ankr.com/avalanche', format:'rpc', type:'L1' },
   { id:'linea', name:'Linea', symbol:'ETH', color:'#61DFFF', url:'https://rpc.linea.build', format:'rpc', type:'L2' },
   { id:'mantle', name:'Mantle', symbol:'MNT', color:'#A0A0A0', url:'https://rpc.mantle.xyz', format:'rpc', type:'L2' },
 ];
@@ -397,7 +397,7 @@ async function fetchChainData(chain, retry = 0) {
     chainData[chain.id] = {
       ...chain,
       gasPrice: gasPriceGwei,
-      online: gasPriceGwei > 0 || data.result
+      online: !!data.result // online if RPC responded with a result
     };
   } catch (e) {
     // Retry once on timeout/network error
