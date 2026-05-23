@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiMoGas — Multi-Chain Gas Optimizer & Predictor</title>
-<meta name="description" content="AI-powered multi-chain gas optimizer. Real-time gas prices across 15+ EVM chains with Xiaomi MiMo V2.5 predictions.">
+<meta name="description" content="AI-powered multi-chain gas optimizer. Real-time gas prices across 15 EVM chains with Xiaomi MiMo V2.5 predictions.">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -17,10 +17,8 @@
 }
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(249,115,22,0.05) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(59,130,246,0.04) 0%,transparent 50%);z-index:0;pointer-events:none}
-
 .container{max-width:1400px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
-/* Header */
 .header{text-align:center;padding:40px 20px 30px}
 .header h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;letter-spacing:-1px}
 .header .subtitle{color:var(--muted);font-size:1.1rem;max-width:600px;margin:0 auto}
@@ -30,7 +28,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .badge.ai{color:var(--purple);border-color:rgba(168,85,247,0.3)}
 .badge.chains{color:var(--cyan);border-color:rgba(6,182,212,0.3)}
 
-/* Stats bar */
 .stats-bar{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:20px 0 30px}
 .stat-card{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px}
 .stat-card .label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
@@ -38,16 +35,13 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .stat-card .value.green{color:var(--green)}
 .stat-card .value.orange{color:var(--accent)}
 
-/* Filters */
 .filters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
 .filter-btn{padding:8px 18px;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass);color:var(--muted);cursor:pointer;font-size:0.85rem;transition:all 0.2s}
 .filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-/* Grid */
 .chain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-bottom:30px}
 
-/* Chain Card */
-.chain-card{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:16px;padding:20px;transition:all 0.3s;cursor:pointer;position:relative;overflow:hidden}
+.chain-card{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:16px;padding:20px;transition:all 0.3s;position:relative;overflow:hidden}
 .chain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--blue));opacity:0;transition:opacity 0.3s}
 .chain-card:hover{border-color:rgba(249,115,22,0.3);transform:translateY(-2px)}
 .chain-card:hover::before{opacity:1}
@@ -71,7 +65,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .chain-footer .status .dot.ok{background:var(--green)}
 .chain-footer .status .dot.err{background:var(--red)}
 
-/* AI Panel */
 .ai-panel{background:var(--glass);backdrop-filter:blur(12px);border:1px solid rgba(168,85,247,0.2);border-radius:16px;padding:28px;margin-bottom:30px}
 .ai-panel h2{display:flex;align-items:center;gap:10px;font-size:1.4rem;margin-bottom:16px;color:var(--purple)}
 .ai-panel h2 .icon{font-size:1.6rem}
@@ -90,7 +83,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .ai-thinking .dots span:nth-child(3){animation-delay:0.4s}
 @keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
 
-/* Comparison */
 .comparison{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:16px;padding:28px;margin-bottom:30px}
 .comparison h2{font-size:1.4rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .compare-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--glass-border)}
@@ -105,12 +97,10 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .compare-bar{height:100%;border-radius:4px;transition:width 0.6s ease}
 .compare-gas{width:100px;text-align:right;font-weight:600;font-size:0.95rem}
 
-/* Footer */
 .footer{text-align:center;padding:30px 20px;color:var(--muted);font-size:0.82rem;border-top:1px solid var(--glass-border)}
 .footer a{color:var(--accent);text-decoration:none}
 .footer .tech{margin-top:8px;font-size:0.75rem;opacity:0.7}
 
-/* Skeleton loading */
 .skeleton{background:linear-gradient(90deg,var(--border) 25%,#253040 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .skel-text{height:14px;margin-bottom:6px}
@@ -118,7 +108,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .skel-text.w80{width:80%}
 .skel-text.w40{width:40%}
 
-/* Responsive */
 @media(max-width:768px){
   .header h1{font-size:1.8rem}
   .chain-grid{grid-template-columns:1fr}
@@ -178,41 +167,42 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <div id="aiContent">
       <div class="ai-thinking">
         <div class="dots"><span></span><span></span><span></span></div>
-        <span>Analyzing gas patterns across 15 chains...</span>
+        <span>Analyzing gas patterns across chains...</span>
       </div>
     </div>
   </div>
 
   <footer class="footer">
     <div>Built for <strong>Xiaomi MiMo 100T Creator Program</strong></div>
-    <div class="tech">Real-time data via Blockscout V2 API · 15 EVM chains · Zero backend · AI by MiMo V2.5</div>
+    <div class="tech">Real-time data via Blockscout V2 + Etherscan-compatible APIs · 15 EVM chains · Zero backend · AI by MiMo V2.5</div>
   </footer>
 </div>
 
 <script>
-// Chain configurations with Blockscout V2 API endpoints
+// Chain configurations — verified endpoints with CORS=*
+// Format: 'blockscout' = returns {gas_prices:{average:...}} | 'etherscan' = returns {result:'0x...'} | 'routescan' = returns {jsonrpc,result:'0x...'}
 const CHAINS = [
-  { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', blockscout:'https://eth.blockscout.com/api/v2', type:'L1', decimals:18 },
-  { id:'bsc', name:'BNB Chain', symbol:'BNB', color:'#F0B90B', blockscout:'https://bsc.blockscout.com/api/v2', type:'L1', decimals:18 },
-  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', blockscout:'https://polygon.blockscout.com/api/v2', type:'L2', decimals:18 },
-  { id:'arbitrum', name:'Arbitrum One', symbol:'ETH', color:'#28A0F0', blockscout:'https://arbitrum.blockscout.com/api/v2', type:'L2', decimals:18 },
-  { id:'optimism', name:'Optimism', symbol:'ETH', color:'#FF0420', blockscout:'https://optimism.blockscout.com/api/v2', type:'L2', decimals:18 },
-  { id:'base', name:'Base', symbol:'ETH', color:'#0052FF', blockscout:'https://base.blockscout.com/api/v2', type:'L2', decimals:18 },
-  { id:'avalanche', name:'Avalanche C', symbol:'AVAX', color:'#E84142', blockscout:'https://avalanche.blockscout.com/api/v2', type:'L1', decimals:18 },
-  { id:'gnosis', name:'Gnosis', symbol:'xDAI', color:'#04795B', blockscout:'https://gnosis.blockscout.com/api/v2', type:'L1', decimals:18 },
-  { id:'fantom', name:'Fantom', symbol:'FTM', color:'#1969FF', blockscout:'https://fantom.blockscout.com/api/v2', type:'L1', decimals:18 },
-  { id:'celo', name:'Celo', symbol:'CELO', color:'#FCFF52', blockscout:'https://celo.blockscout.com/api/v2', type:'L1', decimals:18 },
-  { id:'zksync', name:'zkSync Era', symbol:'ETH', color:'#4E529A', blockscout:'https://zksync.blockscout.com/api/v2', type:'L2', decimals:18 },
-  { id:'linea', name:'Linea', symbol:'ETH', color:'#121212', blockscout:'https://explorer.linea.build/api/v2', type:'L2', decimals:18 },
-  { id:'scroll', name:'Scroll', symbol:'ETH', color:'#FFDBB0', blockscout:'https://scroll.blockscout.com/api/v2', type:'L2', decimals:18 },
-  { id:'mantle', name:'Mantle', symbol:'MNT', color:'#000000', blockscout:'https://mantle.blockscout.com/api/v2', type:'L2', decimals:18 },
-  { id:'polygon_zkevm', name:'Polygon zkEVM', symbol:'ETH', color:'#7B3FE4', blockscout:'https://zkevm.blockscout.com/api/v2', type:'L2', decimals:18 },
+  { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', url:'https://eth.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
+  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'arbitrum', name:'Arbitrum One', symbol:'ETH', color:'#28A0F0', url:'https://arbitrum.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'optimism', name:'Optimism', symbol:'ETH', color:'#FF0420', url:'https://optimism.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'base', name:'Base', symbol:'ETH', color:'#0052FF', url:'https://base.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'gnosis', name:'Gnosis', symbol:'xDAI', color:'#04795B', url:'https://gnosis.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
+  { id:'celo', name:'Celo', symbol:'CELO', color:'#FCFF52', url:'https://celo.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
+  { id:'zksync', name:'zkSync Era', symbol:'ETH', color:'#4E529A', url:'https://zksync.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'scroll', name:'Scroll', symbol:'ETH', color:'#FFDBB0', url:'https://scroll.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'mode', name:'Mode', symbol:'ETH', color:'#DFFE00', url:'https://explorer.mode.network/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'zora', name:'Zora', symbol:'ETH', color:'#000000', url:'https://explorer.zora.energy/api/v2/stats', format:'blockscout', type:'L2' },
+  // Etherscan-compatible (need hex parsing)
+  { id:'bsc', name:'BNB Chain', symbol:'BNB', color:'#F0B90B', url:'https://api.bscscan.com/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L1' },
+  { id:'avalanche', name:'Avalanche C', symbol:'AVAX', color:'#E84142', url:'https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L1' },
+  { id:'linea', name:'Linea', symbol:'ETH', color:'#61DFFF', url:'https://api.lineascan.build/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L2' },
+  { id:'mantle', name:'Mantle', symbol:'MNT', color:'#000000', url:'https://api.routescan.io/v2/network/mainnet/evm/5000/etherscan/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L2' },
 ];
 
 let chainData = {};
 let currentFilter = 'all';
 
-// Initialize
 document.addEventListener('DOMContentLoaded', () => {
   renderSkeletons();
   fetchAllChains();
@@ -234,8 +224,6 @@ function renderSkeletons() {
       <div class="chain-data">
         <div class="data-item"><div class="skeleton skel-text w60"></div><div class="skeleton skel-text w80"></div></div>
         <div class="data-item"><div class="skeleton skel-text w40"></div><div class="skeleton skel-text w60"></div></div>
-        <div class="data-item"><div class="skeleton skel-text w60"></div><div class="skeleton skel-text w80"></div></div>
-        <div class="data-item"><div class="skeleton skel-text w40"></div><div class="skeleton skel-text w60"></div></div>
       </div>
     </div>
   `).join('');
@@ -249,23 +237,49 @@ async function fetchAllChains() {
   fetchAIAdvice();
 }
 
+function parseGasPrice(chain, data) {
+  if (chain.format === 'blockscout') {
+    // Blockscout returns gas_prices.average as a float (Gwei or wei depending on chain)
+    const raw = data.gas_prices?.average ?? data.gas_price_avg ?? 0;
+    let gwei = parseFloat(raw);
+    // Blockscout V2 returns in Gwei for most chains, but some return wei
+    // If value > 1e6, it's likely in wei
+    if (gwei > 1e6) gwei = gwei / 1e9;
+    return gwei;
+  }
+  // Etherscan-compatible returns {result: '0x...'} in wei
+  if (data.result) {
+    const wei = parseInt(data.result, 16);
+    return wei / 1e9; // wei → Gwei
+  }
+  // Routescan returns {jsonrpc, result: '0x...'}
+  return 0;
+}
+
 async function fetchChainData(chain) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const timeout = setTimeout(() => controller.abort(), 12000);
     
-    const res = await fetch(`${chain.blockscout}/stats`, { signal: controller.signal });
+    const res = await fetch(chain.url, { signal: controller.signal });
     clearTimeout(timeout);
     
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     
-    const gasPrice = parseFloat(data.gas_prices?.average || data.gas_price_avg || '0');
-    const gasPriceGwei = gasPrice > 1e6 ? gasPrice / 1e9 : gasPrice; // handle wei vs gwei
-    const totalTxs = parseInt(data.total_transactions || '0');
-    const avgBlockTime = parseFloat(data.average_block_time || '0');
-    const coinPrice = parseFloat(data.coin_price || '0');
-    const totalBlocks = parseInt(data.total_blocks || '0');
+    const gasPriceGwei = parseGasPrice(chain, data);
+    
+    let avgBlockTime = 0;
+    let totalTxs = 0;
+    let coinPrice = 0;
+    let totalBlocks = 0;
+    
+    if (chain.format === 'blockscout') {
+      avgBlockTime = parseFloat(data.average_block_time || '0');
+      totalTxs = parseInt(data.total_transactions || '0');
+      coinPrice = parseFloat(data.coin_price || '0');
+      totalBlocks = parseInt(data.total_blocks || '0');
+    }
     
     chainData[chain.id] = {
       ...chain,
@@ -274,11 +288,10 @@ async function fetchChainData(chain) {
       avgBlockTime,
       coinPrice,
       totalBlocks,
-      online: true,
-      raw: data
+      online: true
     };
   } catch (e) {
-    chainData[chain.id] = { ...chain, gasPrice: 0, online: false, error: e.message };
+    chainData[chain.id] = { ...chain, gasPrice: 0, online: false, error: e.name === 'AbortError' ? 'Timeout' : e.message };
   }
   renderCard(chain.id);
 }
@@ -290,7 +303,6 @@ function getGasClass(gwei) {
 }
 
 function getGasBarWidth(gwei) {
-  // Log scale: 0.01 gwei = 5%, 100 gwei = 100%
   const logVal = Math.log10(Math.max(gwei, 0.001) + 1);
   const maxLog = Math.log10(101);
   return Math.min(100, Math.max(5, (logVal / maxLog) * 100));
@@ -337,7 +349,14 @@ function renderCard(id) {
   const gasClass = getGasClass(d.gasPrice);
   const barW = getGasBarWidth(d.gasPrice);
   const barColor = getBarColor(d.gasPrice);
-  const txCost = d.coinPrice > 0 ? (d.gasPrice * 21000 * d.coinPrice / 1e9).toFixed(4) : '—';
+  
+  // Estimate transfer cost: gasPrice(Gwei) × 21000 × coinPrice(USD) / 1e9
+  const txCost = d.coinPrice > 0 ? (d.gasPrice * 21000 * d.coinPrice / 1e9).toFixed(4) : null;
+  
+  let extraInfo = '';
+  if (d.coinPrice > 0) {
+    extraInfo = `<div style="text-align:right"><div style="font-size:0.72rem;color:var(--muted)">Price</div><div style="font-weight:600">$${d.coinPrice.toFixed(2)}</div></div>`;
+  }
   
   card.innerHTML = `
     <div class="chain-header">
@@ -348,7 +367,7 @@ function renderCard(id) {
           <div class="chain-tag">${d.type}</div>
         </div>
       </div>
-      ${d.coinPrice > 0 ? `<div style="text-align:right"><div style="font-size:0.72rem;color:var(--muted)">Price</div><div style="font-weight:600">$${d.coinPrice.toFixed(2)}</div></div>` : ''}
+      ${extraInfo}
     </div>
     <div class="chain-data">
       <div class="data-item">
@@ -357,21 +376,23 @@ function renderCard(id) {
         <div class="gas-bar"><div class="gas-bar-fill" style="width:${barW}%;background:${barColor}"></div></div>
       </div>
       <div class="data-item">
-        <div class="data-label">ETH Transfer Cost</div>
-        <div class="data-value ${gasClass}">${txCost === '—' ? '—' : '$' + txCost}</div>
+        <div class="data-label">Transfer Cost</div>
+        <div class="data-value ${gasClass}">${txCost ? '$' + txCost : '—'}</div>
       </div>
+      ${d.avgBlockTime > 0 ? `
       <div class="data-item">
         <div class="data-label">Avg Block Time</div>
-        <div class="data-value">${d.avgBlockTime > 0 ? d.avgBlockTime.toFixed(1) + 's' : '—'}</div>
-      </div>
+        <div class="data-value">${d.avgBlockTime.toFixed(1)}s</div>
+      </div>` : '<div class="data-item"></div>'}
+      ${d.totalTxs > 0 ? `
       <div class="data-item">
         <div class="data-label">Total Transactions</div>
         <div class="data-value">${formatNumber(d.totalTxs, 0)}</div>
-      </div>
+      </div>` : '<div class="data-item"></div>'}
     </div>
     <div class="chain-footer">
       <div class="status"><span class="dot ok"></span> Online</div>
-      <div>Block #${formatNumber(d.totalBlocks, 0)}</div>
+      ${d.totalBlocks > 0 ? `<div>Block #${formatNumber(d.totalBlocks, 0)}</div>` : ''}
     </div>
   `;
 }
@@ -380,12 +401,18 @@ function updateStats() {
   const online = Object.values(chainData).filter(d => d.online);
   const sorted = [...online].sort((a, b) => a.gasPrice - b.gasPrice);
   
-  document.getElementById('statCheapest').textContent = sorted.length > 0 ? `${sorted[0].name} (${sorted[0].gasPrice < 0.01 ? sorted[0].gasPrice.toFixed(4) : sorted[0].gasPrice.toFixed(2)} Gwei)` : '—';
-  document.getElementById('statExpensive').textContent = sorted.length > 0 ? `${sorted[sorted.length-1].name} (${sorted[sorted.length-1].gasPrice.toFixed(2)} Gwei)` : '—';
+  if (sorted.length > 0) {
+    const cheapest = sorted[0];
+    const expensive = sorted[sorted.length - 1];
+    document.getElementById('statCheapest').textContent = `${cheapest.name} (${cheapest.gasPrice < 0.01 ? cheapest.gasPrice.toFixed(4) : cheapest.gasPrice.toFixed(2)} Gwei)`;
+    document.getElementById('statExpensive').textContent = `${expensive.name} (${expensive.gasPrice.toFixed(2)} Gwei)`;
+    
+    const avg = sorted.reduce((s, d) => s + d.gasPrice, 0) / sorted.length;
+    document.getElementById('statAvg').textContent = avg.toFixed(2) + ' Gwei';
+  }
   
-  const avg = sorted.length > 0 ? sorted.reduce((s, d) => s + d.gasPrice, 0) / sorted.length : 0;
-  document.getElementById('statAvg').textContent = avg.toFixed(2) + ' Gwei';
   document.getElementById('statOnline').textContent = `${online.length}/${CHAINS.length}`;
+  document.getElementById('chainCount').textContent = `${online.length} Online`;
 }
 
 function filterChains(filter) {
@@ -404,7 +431,6 @@ function filterChains(filter) {
       case 'moderate': show = d.gasPrice >= 1 && d.gasPrice < 10; break;
       case 'expensive': show = d.gasPrice >= 10; break;
       case 'l2': show = d.type === 'L2'; break;
-      default: show = true;
     }
     card.style.display = show ? '' : 'none';
   });
@@ -440,6 +466,11 @@ async function fetchAIAdvice() {
   const online = Object.values(chainData).filter(d => d.online);
   const sorted = [...online].sort((a, b) => a.gasPrice - b.gasPrice);
   
+  if (sorted.length < 3) {
+    renderAIFallback(sorted);
+    return;
+  }
+  
   const gasSummary = sorted.map(d => `${d.name}: ${d.gasPrice.toFixed(4)} Gwei (${d.type})`).join(', ');
   
   const prompt = `You are MiMoGas AI, a blockchain gas optimization advisor. Based on these REAL-TIME gas prices across ${sorted.length} EVM chains:
@@ -455,7 +486,7 @@ Rules:
 - "wait" = expensive, recommend waiting or using alternative
 - Consider: gas price, chain type (L1 vs L2), ecosystem size
 - Be specific with numbers (e.g. "Save 95% vs Ethereum")
-- Keep each advice under 100 characters`;
+- Keep each advice under 120 characters`;
 
   try {
     const res = await fetch('https://text.pollinations.ai/', {
@@ -475,18 +506,15 @@ Rules:
     const text = await res.text();
     let recs;
     try {
-      // Try parse directly
       recs = JSON.parse(text.trim());
     } catch {
-      // Try extract JSON from response
       const match = text.match(/\[[\s\S]*\]/);
       if (match) recs = JSON.parse(match[0]);
-      else throw new Error('No JSON in response');
+      else throw new Error('No JSON');
     }
     
     renderAIRecommendations(recs);
   } catch (e) {
-    // Fallback: generate recommendations locally
     renderAIFallback(sorted);
   }
 }
@@ -514,20 +542,20 @@ function renderAIFallback(sorted) {
   const expensive = sorted[sorted.length - 1];
   const savings = ((1 - cheapest.gasPrice / expensive.gasPrice) * 100).toFixed(0);
   
+  const l2alt = sorted.find(d => d.type === 'L2' && d.id !== cheapest.id) || mid;
+  
   const recs = [
-    { chain: cheapest.name, advice: `Best value right now at ${cheapest.gasPrice < 0.01 ? cheapest.gasPrice.toFixed(4) : cheapest.gasPrice.toFixed(2)} Gwei. Save ${savings}% vs ${expensive.name}.`, tag: 'best', reason: `Lowest gas across all ${sorted.length} chains` },
-    { chain: sorted.find(d => d.type === 'L2' && d.id !== cheapest.id)?.name || mid.name, advice: `Good L2 alternative with strong ecosystem and low fees.`, tag: 'good', reason: 'Best balance of cost and ecosystem' },
-    { chain: expensive.name, advice: `Currently expensive at ${expensive.gasPrice.toFixed(2)} Gwei. Use ${cheapest.name} or wait for off-peak hours.`, tag: 'wait', reason: `${expensive.gasPrice.toFixed(0)}x more expensive than cheapest option` },
-    { chain: 'Timing', advice: `Gas prices vary 2-5x within 24h. Best time: weekends 2-6 AM UTC.`, tag: 'good', reason: 'Historical pattern across all chains' }
+    { chain: cheapest.name, advice: `Best value at ${cheapest.gasPrice < 0.01 ? cheapest.gasPrice.toFixed(4) : cheapest.gasPrice.toFixed(2)} Gwei. Save ${savings}% vs ${expensive.name}.`, tag: 'best', reason: `Lowest gas across ${sorted.length} chains` },
+    { chain: l2alt.name, advice: `Good L2 alternative with strong ecosystem and low fees.`, tag: 'good', reason: 'Best balance of cost and ecosystem' },
+    { chain: expensive.name, advice: `Currently ${expensive.gasPrice.toFixed(1)} Gwei. Use ${cheapest.name} or wait for off-peak.`, tag: 'wait', reason: `${Math.round(expensive.gasPrice / Math.max(cheapest.gasPrice, 0.001))}x more expensive than cheapest` },
+    { chain: 'Timing', advice: `Gas varies 2-5x daily. Best time: weekends 2-6 AM UTC for all chains.`, tag: 'good', reason: 'Historical pattern' }
   ];
   
   renderAIRecommendations(recs);
 }
 
-// Auto-refresh every 60 seconds
-setInterval(() => {
-  fetchAllChains();
-}, 60000);
+// Auto-refresh every 60s
+setInterval(fetchAllChains, 60000);
 </script>
 </body>
 </html>
