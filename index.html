@@ -305,22 +305,22 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 // Chain configurations — verified endpoints with CORS=*
 // Format: 'blockscout' = returns {gas_prices:{average:...}} | 'etherscan' = returns {result:'0x...'} | 'routescan' = returns {jsonrpc,result:'0x...'}
 const CHAINS = [
-  { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', url:'https://eth.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
-  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon.blockscout.com/api/v2/stats', format:'blockscout', type:'L1', rpc:'https://polygon-rpc.com' },
-  { id:'arbitrum', name:'Arbitrum One', symbol:'ETH', color:'#28A0F0', url:'https://arbitrum.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', url:'https://eth.blockscout.com/api/v2/stats', format:'blockscout', type:'L1', rpc:'https://eth.llamarpc.com' },
+  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon.blockscout.com/api/v2/stats', format:'blockscout', type:'L1', rpc:'https://polygon.llamarpc.com' },
+  { id:'arbitrum', name:'Arbitrum One', symbol:'ETH', color:'#28A0F0', url:'https://arbitrum.blockscout.com/api/v2/stats', format:'blockscout', type:'L2', rpc:'https://arb1.arbitrum.io/rpc' },
   { id:'optimism', name:'Optimism', symbol:'ETH', color:'#FF0420', url:'https://optimism.blockscout.com/api/v2/stats', format:'blockscout', type:'L2', rpc:'https://rpc.ankr.com/optimism' },
-  { id:'base', name:'Base', symbol:'ETH', color:'#0052FF', url:'https://base.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
-  { id:'gnosis', name:'Gnosis', symbol:'xDAI', color:'#04795B', url:'https://gnosis.blockscout.com/api/v2/stats', format:'blockscout', type:'L1' },
+  { id:'base', name:'Base', symbol:'ETH', color:'#0052FF', url:'https://base.blockscout.com/api/v2/stats', format:'blockscout', type:'L2', rpc:'https://base.llamarpc.com' },
+  { id:'gnosis', name:'Gnosis', symbol:'xDAI', color:'#04795B', url:'https://gnosis.blockscout.com/api/v2/stats', format:'blockscout', type:'L1', rpc:'https://rpc.gnosischain.com' },
   { id:'celo', name:'Celo', symbol:'CELO', color:'#FCFF52', url:'https://celo.blockscout.com/api/v2/stats', format:'blockscout', type:'L1', rpc:'https://forno.celo.org' },
-  { id:'zksync', name:'zkSync Era', symbol:'ETH', color:'#4E529A', url:'https://zksync.blockscout.com/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'zksync', name:'zkSync Era', symbol:'ETH', color:'#4E529A', url:'https://zksync.blockscout.com/api/v2/stats', format:'blockscout', type:'L2', rpc:'https://mainnet.era.zksync.io' },
   { id:'scroll', name:'Scroll', symbol:'ETH', color:'#FFDBB0', url:'https://scroll.blockscout.com/api/v2/stats', format:'blockscout', type:'L2', rpc:'https://scroll.drpc.org' },
-  { id:'mode', name:'Mode', symbol:'ETH', color:'#DFFE00', url:'https://explorer.mode.network/api/v2/stats', format:'blockscout', type:'L2' },
+  { id:'mode', name:'Mode', symbol:'ETH', color:'#DFFE00', url:'https://explorer.mode.network/api/v2/stats', format:'blockscout', type:'L2', rpc:'https://mainnet.mode.network' },
   { id:'zora', name:'Zora', symbol:'ETH', color:'#A0A0A0', url:'https://zora.drpc.org', format:'rpc', type:'L2' },
-  // JSON-RPC (eth_gasPrice, always in wei, always CORS=*)
+  // JSON-RPC primary
   { id:'bsc', name:'BNB Chain', symbol:'BNB', color:'#F0B90B', url:'https://bsc-dataseed1.binance.org/', format:'rpc', type:'L1' },
-  { id:'avalanche', name:'Avalanche C', symbol:'AVAX', color:'#E84142', url:'https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L1' },
+  { id:'avalanche', name:'Avalanche C', symbol:'AVAX', color:'#E84142', url:'https://avax.drpc.org', format:'rpc', type:'L1' },
   { id:'linea', name:'Linea', symbol:'ETH', color:'#61DFFF', url:'https://rpc.linea.build', format:'rpc', type:'L2' },
-  { id:'mantle', name:'Mantle', symbol:'MNT', color:'#A0A0A0', url:'https://api.routescan.io/v2/network/mainnet/evm/5000/etherscan/api?module=proxy&action=eth_gasPrice', format:'etherscan', type:'L2' },
+  { id:'mantle', name:'Mantle', symbol:'MNT', color:'#A0A0A0', url:'https://rpc.mantle.xyz', format:'rpc', type:'L2' },
 ];
 
 let chainData = {};
@@ -353,8 +353,13 @@ function renderSkeletons() {
 }
 
 async function fetchAllChains() {
-  const promises = CHAINS.map(chain => fetchChainData(chain));
-  await Promise.allSettled(promises);
+  // Batch requests: 5 at a time with 500ms delay to avoid rate limiting
+  const batchSize = 5;
+  for (let i = 0; i < CHAINS.length; i += batchSize) {
+    const batch = CHAINS.slice(i, i + batchSize);
+    await Promise.allSettled(batch.map(chain => fetchChainData(chain)));
+    if (i + batchSize < CHAINS.length) await new Promise(r => setTimeout(r, 500));
+  }
   updateStats();
   renderComparison();
   fetchAIAdvice();
@@ -384,10 +389,10 @@ function parseGasPrice(chain, data) {
   return 0;
 }
 
-async function fetchChainData(chain) {
+async function fetchChainData(chain, retry = 0) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
+    const timeout = setTimeout(() => controller.abort(), 15000);
     
     let res;
     if (chain.format === 'rpc') {
@@ -430,14 +435,23 @@ async function fetchChainData(chain) {
       online: true
     };
   } catch (e) {
+    // Retry once on timeout/network error
+    if (retry < 1 && (e.name === 'AbortError' || e.name === 'TypeError')) {
+      await new Promise(r => setTimeout(r, 1000));
+      return fetchChainData(chain, retry + 1);
+    }
     // Fallback to RPC if primary failed and RPC available
     if (chain.rpc && chain.format !== 'rpc') {
       try {
+        const rpcController = new AbortController();
+        const rpcTimeout = setTimeout(() => rpcController.abort(), 10000);
         const rpcRes = await fetch(chain.rpc, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 })
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 }),
+          signal: rpcController.signal
         });
+        clearTimeout(rpcTimeout);
         const rpcData = await rpcRes.json();
         const gasGwei = parseGasPrice({ format: 'rpc' }, rpcData);
         if (gasGwei > 0) {
