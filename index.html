@@ -305,8 +305,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 // Chain configurations — verified endpoints with CORS=*
 // Format: 'blockscout' = returns {gas_prices:{average:...}} | 'etherscan' = returns {result:'0x...'} | 'routescan' = returns {jsonrpc,result:'0x...'}
 const CHAINS = [
-  { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', url:'https://eth.llamarpc.com', format:'rpc', type:'L1' },
-  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon-rpc.com', format:'rpc', type:'L1' },
+  { id:'eth', name:'Ethereum', symbol:'ETH', color:'#627EEA', url:'https://1rpc.io/eth', format:'rpc', type:'L1' },
+  { id:'polygon', name:'Polygon', symbol:'MATIC', color:'#8247E5', url:'https://polygon.drpc.org', format:'rpc', type:'L1' },
   { id:'arbitrum', name:'Arbitrum One', symbol:'ETH', color:'#28A0F0', url:'https://arb1.arbitrum.io/rpc', format:'rpc', type:'L2' },
   { id:'optimism', name:'Optimism', symbol:'ETH', color:'#FF0420', url:'https://mainnet.optimism.io', format:'rpc', type:'L2' },
   { id:'base', name:'Base', symbol:'ETH', color:'#0052FF', url:'https://mainnet.base.org', format:'rpc', type:'L2' },
